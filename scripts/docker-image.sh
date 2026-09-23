@@ -22,7 +22,7 @@ fi
 
 revision=$(git rev-parse HEAD)
 tag=$(git rev-parse --short=12 HEAD)
-image=${HOMEBOX_IMAGE:-git.iio.fi/hsaksela/homebox}
+image=${HOMEBOX_IMAGE:-ghcr.io/henriks/homebox}
 reference=$image:$tag-rootless
 
 if [ "$mode" = build ]; then
