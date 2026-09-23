@@ -1,8 +1,8 @@
 # Fork image publishing
 
-This fork's regular image is `git.iio.fi/hsaksela/homebox`, built for
-`linux/amd64`. The source revision is recorded in the tag and passed to the
-backend build. From a clean, committed checkout:
+This fork's rootless image is `git.iio.fi/hsaksela/homebox`, built for
+`linux/amd64`. It runs as UID/GID 65532. The source revision is recorded in
+the tag and passed to the backend build. From a clean, committed checkout:
 
 ```sh
 scripts/docker-image.sh build
@@ -10,8 +10,8 @@ scripts/docker-image.sh build
 scripts/docker-image.sh push
 ```
 
-The `build` command creates `git.iio.fi/hsaksela/homebox:<12-character commit>`.
-The `push` command publishes that tag and updates `latest`. Set `HOMEBOX_IMAGE`
+The `build` command creates `git.iio.fi/hsaksela/homebox:<12-character commit>-rootless`.
+The `push` command publishes that tag and updates `latest-rootless`. Set `HOMEBOX_IMAGE`
 to publish to another registry. Docker must already be logged in to the target
 registry. For a pinned deployment, use the commit tag or the published digest.
 
@@ -22,5 +22,5 @@ workflow does not publish images to this Gitea registry. The script above is
 the repeatable build and publish procedure for this fork.
 
 This procedure reproduces the build inputs and tags for a Git revision; the
-Dockerfile still uses floating base-image and Alpine package versions, so
+Dockerfile.rootless still uses floating base-image and Alpine package versions, so
 rebuilding later is not guaranteed to produce identical bytes.

@@ -23,12 +23,12 @@ fi
 revision=$(git rev-parse HEAD)
 tag=$(git rev-parse --short=12 HEAD)
 image=${HOMEBOX_IMAGE:-git.iio.fi/hsaksela/homebox}
-reference=$image:$tag
+reference=$image:$tag-rootless
 
 if [ "$mode" = build ]; then
   docker buildx build \
     --platform linux/amd64 \
-    --file Dockerfile \
+    --file Dockerfile.rootless \
     --build-arg "COMMIT=$revision" \
     --build-arg "VERSION=$tag" \
     --tag "$reference" \
@@ -37,7 +37,7 @@ if [ "$mode" = build ]; then
 else
   docker image inspect "$reference" >/dev/null
   docker push "$reference"
-  docker tag "$reference" "$image:latest"
-  docker push "$image:latest"
-  echo "Published $reference and $image:latest"
+  docker tag "$reference" "$image:latest-rootless"
+  docker push "$image:latest-rootless"
+  echo "Published $reference and $image:latest-rootless"
 fi
