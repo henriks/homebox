@@ -1235,6 +1235,7 @@ export interface Group {
   currency: string;
   id: string;
   name: string;
+  scaleImages: boolean;
   updatedAt: Date | string;
 }
 
@@ -1257,6 +1258,7 @@ export interface GroupStatistics {
 export interface GroupUpdate {
   currency: string;
   name: string;
+  scaleImages?: boolean;
 }
 
 export interface ItemAttachment {

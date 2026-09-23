@@ -4558,6 +4558,10 @@ const docTemplate = `{
                     "description": "Name holds the value of the \"name\" field.",
                     "type": "string"
                 },
+                "scale_images": {
+                    "description": "ScaleImages holds the value of the \"scale_images\" field.",
+                    "type": "boolean"
+                },
                 "updated_at": {
                     "description": "UpdatedAt holds the value of the \"updated_at\" field.",
                     "type": "string"
@@ -6527,6 +6531,9 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
+                "scaleImages": {
+                    "type": "boolean"
+                },
                 "updatedAt": {
                     "type": "string"
                 }
@@ -6580,6 +6587,9 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
+                },
+                "scaleImages": {
+                    "type": "boolean"
                 }
             }
         },

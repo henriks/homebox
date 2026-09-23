@@ -179,7 +179,7 @@ func run(cfg *config.Config) error {
 		log.Error().Err(err).Str("driver", cfg.Search.Driver).Msg("failed to create search engine")
 		return err
 	}
-	app.repos = repo.New(c, app.bus, cfg.Storage, cfg.Database.PubSubConnString, cfg.Thumbnail, searchEngine)
+	app.repos = repo.New(c, app.bus, cfg.Storage, cfg.Database.PubSubConnString, cfg.Thumbnail, searchEngine, cfg.ImageScaling)
 
 	// Attachment-key escaping in fileblob only flattens paths on Windows
 	// (where os.PathSeparator is "\"), so the legacy-path rename is a Windows-

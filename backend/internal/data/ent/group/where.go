@@ -76,6 +76,11 @@ func Currency(v string) predicate.Group {
 	return predicate.Group(sql.FieldEQ(FieldCurrency, v))
 }
 
+// ScaleImages applies equality check predicate on the "scale_images" field. It's identical to ScaleImagesEQ.
+func ScaleImages(v bool) predicate.Group {
+	return predicate.Group(sql.FieldEQ(FieldScaleImages, v))
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.Group {
 	return predicate.Group(sql.FieldEQ(FieldCreatedAt, v))
@@ -284,6 +289,16 @@ func CurrencyEqualFold(v string) predicate.Group {
 // CurrencyContainsFold applies the ContainsFold predicate on the "currency" field.
 func CurrencyContainsFold(v string) predicate.Group {
 	return predicate.Group(sql.FieldContainsFold(FieldCurrency, v))
+}
+
+// ScaleImagesEQ applies the EQ predicate on the "scale_images" field.
+func ScaleImagesEQ(v bool) predicate.Group {
+	return predicate.Group(sql.FieldEQ(FieldScaleImages, v))
+}
+
+// ScaleImagesNEQ applies the NEQ predicate on the "scale_images" field.
+func ScaleImagesNEQ(v bool) predicate.Group {
+	return predicate.Group(sql.FieldNEQ(FieldScaleImages, v))
 }
 
 // HasUsers applies the HasEdge predicate on the "users" edge.

@@ -46,14 +46,23 @@ func Test_Group_Create_WithUser(t *testing.T) {
 func Test_Group_Update(t *testing.T) {
 	g, err := tRepos.Groups.GroupCreate(context.Background(), "test", uuid.Nil)
 	require.NoError(t, err)
+	assert.False(t, g.ScaleImages)
+
+	enabled := true
 
 	g, err = tRepos.Groups.GroupUpdate(context.Background(), g.ID, GroupUpdate{
-		Name:     "test2",
-		Currency: "eur",
+		Name:        "test2",
+		Currency:    "eur",
+		ScaleImages: &enabled,
 	})
 	require.NoError(t, err)
 	assert.Equal(t, "test2", g.Name)
 	assert.Equal(t, "EUR", g.Currency)
+	assert.True(t, g.ScaleImages)
+
+	g, err = tRepos.Groups.GroupUpdate(context.Background(), g.ID, GroupUpdate{Name: "test3", Currency: "usd"})
+	require.NoError(t, err)
+	assert.True(t, g.ScaleImages, "omitting the optional setting must preserve its value")
 }
 
 // TODO: Fix this test at some point, the data itself in production/development is working fine, it only fails on the test

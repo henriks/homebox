@@ -31,11 +31,12 @@ type GroupRepository struct {
 func NewGroupRepository(db *ent.Client, attachments *AttachmentRepo) *GroupRepository {
 	gmap := func(g *ent.Group) Group {
 		return Group{
-			ID:        g.ID,
-			Name:      g.Name,
-			CreatedAt: g.CreatedAt,
-			UpdatedAt: g.UpdatedAt,
-			Currency:  strings.ToUpper(g.Currency),
+			ID:          g.ID,
+			Name:        g.Name,
+			CreatedAt:   g.CreatedAt,
+			UpdatedAt:   g.UpdatedAt,
+			Currency:    strings.ToUpper(g.Currency),
+			ScaleImages: g.ScaleImages,
 		}
 	}
 
@@ -58,16 +59,18 @@ func NewGroupRepository(db *ent.Client, attachments *AttachmentRepo) *GroupRepos
 
 type (
 	Group struct {
-		ID        uuid.UUID `json:"id,omitempty"`
-		Name      string    `json:"name,omitempty"`
-		CreatedAt time.Time `json:"createdAt,omitempty"`
-		UpdatedAt time.Time `json:"updatedAt,omitempty"`
-		Currency  string    `json:"currency,omitempty"`
+		ID          uuid.UUID `json:"id,omitempty"`
+		Name        string    `json:"name,omitempty"`
+		CreatedAt   time.Time `json:"createdAt,omitempty"`
+		UpdatedAt   time.Time `json:"updatedAt,omitempty"`
+		Currency    string    `json:"currency,omitempty"`
+		ScaleImages bool      `json:"scaleImages"`
 	}
 
 	GroupUpdate struct {
-		Name     string `json:"name"`
-		Currency string `json:"currency"`
+		Name        string `json:"name"`
+		Currency    string `json:"currency"`
+		ScaleImages *bool  `json:"scaleImages,omitempty"`
 	}
 
 	GroupInvitationCreate struct {
@@ -313,10 +316,13 @@ func (r *GroupRepository) GroupCreate(ctx context.Context, name string, userID u
 }
 
 func (r *GroupRepository) GroupUpdate(ctx context.Context, id uuid.UUID, data GroupUpdate) (Group, error) {
-	entity, err := r.db.Group.UpdateOneID(id).
+	update := r.db.Group.UpdateOneID(id).
 		SetName(data.Name).
-		SetCurrency(strings.ToLower(data.Currency)).
-		Save(ctx)
+		SetCurrency(strings.ToLower(data.Currency))
+	if data.ScaleImages != nil {
+		update.SetScaleImages(*data.ScaleImages)
+	}
+	entity, err := update.Save(ctx)
 
 	return r.groupMapper.MapErr(entity, err)
 }

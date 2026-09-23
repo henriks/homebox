@@ -139,6 +139,9 @@ func (ctrl *V1Controller) HandleEntityAttachmentCreate() errchain.HandlerFunc {
 		if err != nil {
 			recordCtrlSpanError(span, err)
 			log.Err(err).Msg("failed to add attachment")
+			if errors.Is(err, repo.ErrInvalidPhoto) {
+				return validate.NewRequestError(err, http.StatusUnprocessableEntity)
+			}
 			return validate.NewRequestError(err, http.StatusInternalServerError)
 		}
 
