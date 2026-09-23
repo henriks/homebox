@@ -52,10 +52,11 @@ import (
 // AttachmentRepo is a repository for Attachments table that links Items to their
 // associated files while also specifying the type of the attachment.
 type AttachmentRepo struct {
-	db         *ent.Client
-	storage    config.Storage
-	pubSubConn string
-	thumbnail  config.Thumbnail
+	db           *ent.Client
+	storage      config.Storage
+	pubSubConn   string
+	thumbnail    config.Thumbnail
+	imageScaling config.ImageScaling
 }
 
 type (
@@ -369,6 +370,14 @@ func (r *AttachmentRepo) Create(ctx context.Context, itemID uuid.UUID, doc ItemC
 			return nil, err
 		}
 		return nil, err
+	}
+	if typ == attachment.TypePhoto && itemGroup.ScaleImages {
+		doc, err = scalePhoto(doc, r.imageScaling)
+		if err != nil {
+			_ = tx.Rollback()
+			return nil, err
+		}
+		bldr.SetTitle(doc.Title)
 	}
 
 	// Upload the file to the storage bucket

@@ -494,6 +494,10 @@ func init() {
 	groupDescCurrency := groupFields[1].Descriptor()
 	// group.DefaultCurrency holds the default value on creation for the currency field.
 	group.DefaultCurrency = groupDescCurrency.Default.(string)
+	// groupDescScaleImages is the schema descriptor for scale_images field.
+	groupDescScaleImages := groupFields[2].Descriptor()
+	// group.DefaultScaleImages holds the default value on creation for the scale_images field.
+	group.DefaultScaleImages = groupDescScaleImages.Default.(bool)
 	// groupDescID is the schema descriptor for id field.
 	groupDescID := groupMixinFields0[0].Descriptor()
 	// group.DefaultID holds the default value on creation for the id field.

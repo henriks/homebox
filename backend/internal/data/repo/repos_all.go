@@ -27,11 +27,11 @@ type AllRepos struct {
 
 // New constructs the repository container. searchEngine selects the free-text
 // search implementation; nil falls back to the default database engine.
-func New(db *ent.Client, bus *eventbus.EventBus, storage config.Storage, pubSubConn string, thumbnail config.Thumbnail, searchEngine search.Engine) *AllRepos {
+func New(db *ent.Client, bus *eventbus.EventBus, storage config.Storage, pubSubConn string, thumbnail config.Thumbnail, searchEngine search.Engine, imageScaling config.ImageScaling) *AllRepos {
 	if searchEngine == nil {
 		searchEngine = search.NewDatabaseEngine(db)
 	}
-	attachments := &AttachmentRepo{db, storage, pubSubConn, thumbnail}
+	attachments := &AttachmentRepo{db: db, storage: storage, pubSubConn: pubSubConn, thumbnail: thumbnail, imageScaling: imageScaling}
 	return &AllRepos{
 		Users:               &UserRepository{db},
 		AuthTokens:          &TokenRepository{db},
