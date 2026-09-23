@@ -1,0 +1,91 @@
+name: Sync upstream and publish fork image
+
+on:
+  schedule:
+    - cron: '30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: write
+
+concurrency:
+  group: fork-rootless-image
+  cancel-in-progress: false
+
+jobs:
+  sync-and-publish:
+    if: github.repository == 'henriks/homebox'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out patched branch
+        uses: actions/checkout@v4
+        with:
+          ref: feature/scale-uploaded-photos
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Rebase onto upstream main
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git remote add upstream https://github.com/sysadminsmedia/homebox.git
+          git fetch upstream main
+
+          before=$(git rev-parse HEAD)
+          trap 'git rebase --abort 2>/dev/null || true' EXIT
+          git rebase upstream/main
+          trap - EXIT
+          after=$(git rev-parse HEAD)
+
+          if [ "$before" != "$after" ]; then
+            git push --force-with-lease origin HEAD:feature/scale-uploaded-photos
+          else
+            echo 'Branch is already based on upstream main'
+          fi
+
+      - name: Resolve image revision
+        id: revision
+        run: |
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo "short=$(git rev-parse --short=12 HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check whether this revision is published
+        id: image
+        run: |
+          tag="ghcr.io/henriks/homebox:${{ steps.revision.outputs.short }}-rootless"
+          if docker buildx imagetools inspect "$tag" >/dev/null 2>&1; then
+            echo 'publish=false' >> "$GITHUB_OUTPUT"
+            echo "$tag already exists"
+          else
+            echo 'publish=true' >> "$GITHUB_OUTPUT"
+            echo "$tag is not published yet"
+          fi
+
+      - name: Build and publish rootless image
+        if: github.event_name == 'workflow_dispatch' || steps.image.outputs.publish == 'true'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.rootless
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ghcr.io/henriks/homebox:latest-rootless
+            ghcr.io/henriks/homebox:${{ steps.revision.outputs.short }}-rootless
+          build-args: |
+            COMMIT=${{ steps.revision.outputs.sha }}
+            VERSION=${{ steps.revision.outputs.short }}
+          cache-from: type=gha,scope=fork-rootless
+          cache-to: type=gha,scope=fork-rootless,mode=max
