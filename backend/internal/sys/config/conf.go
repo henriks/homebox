@@ -46,22 +46,23 @@ const (
 
 type Config struct {
 	conf.Version
-	Mode       string         `yaml:"mode"       conf:"default:development"` // development or production
-	Web        WebConfig      `yaml:"web"`
-	Storage    Storage        `yaml:"storage"`
-	Database   Database       `yaml:"database"`
-	Log        LoggerConf     `yaml:"logger"`
-	Mailer     MailerConf     `yaml:"mailer"`
-	Demo       bool           `yaml:"demo"`
-	Debug      DebugConf      `yaml:"debug"`
-	Options    Options        `yaml:"options"`
-	OIDC       OIDCConf       `yaml:"oidc"`
-	LabelMaker LabelMakerConf `yaml:"labelmaker"`
-	Thumbnail  Thumbnail      `yaml:"thumbnail"`
-	Barcode    BarcodeAPIConf `yaml:"barcode"`
-	Otel       OTelConfig     `yaml:"otel"`
-	Auth       AuthConfig     `yaml:"auth"`
-	Notifier   NotifierConf   `yaml:"notifier"`
+	Mode         string         `yaml:"mode"       conf:"default:development"` // development or production
+	Web          WebConfig      `yaml:"web"`
+	Storage      Storage        `yaml:"storage"`
+	Database     Database       `yaml:"database"`
+	Log          LoggerConf     `yaml:"logger"`
+	Mailer       MailerConf     `yaml:"mailer"`
+	Demo         bool           `yaml:"demo"`
+	Debug        DebugConf      `yaml:"debug"`
+	Options      Options        `yaml:"options"`
+	OIDC         OIDCConf       `yaml:"oidc"`
+	LabelMaker   LabelMakerConf `yaml:"labelmaker"`
+	Thumbnail    Thumbnail      `yaml:"thumbnail"`
+	ImageScaling ImageScaling   `yaml:"image_scaling"`
+	Barcode      BarcodeAPIConf `yaml:"barcode"`
+	Otel         OTelConfig     `yaml:"otel"`
+	Auth         AuthConfig     `yaml:"auth"`
+	Notifier     NotifierConf   `yaml:"notifier"`
 }
 
 type Options struct {
@@ -79,6 +80,12 @@ type Thumbnail struct {
 	Enabled bool `yaml:"enabled" conf:"default:true"`
 	Width   int  `yaml:"width"   conf:"default:500"`
 	Height  int  `yaml:"height"  conf:"default:500"`
+}
+
+type ImageScaling struct {
+	Width   int `yaml:"width"   conf:"default:1920"`
+	Height  int `yaml:"height"  conf:"default:1920"`
+	Quality int `yaml:"quality" conf:"default:80"`
 }
 
 type DebugConf struct {
@@ -206,6 +213,12 @@ func New(buildstr string, description string) (*Config, error) {
 			os.Exit(0)
 		}
 		return &cfg, fmt.Errorf("parsing config: %w", err)
+	}
+	if cfg.ImageScaling.Width < 1 || cfg.ImageScaling.Width > 10000 || cfg.ImageScaling.Height < 1 || cfg.ImageScaling.Height > 10000 {
+		return &cfg, fmt.Errorf("image scaling width and height must be between 1 and 10000")
+	}
+	if cfg.ImageScaling.Quality < 1 || cfg.ImageScaling.Quality > 100 {
+		return &cfg, fmt.Errorf("image scaling quality must be between 1 and 100")
 	}
 
 	return &cfg, nil

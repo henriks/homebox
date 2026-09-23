@@ -24,8 +24,8 @@ type AllRepos struct {
 	Exports             *ExportRepository
 }
 
-func New(db *ent.Client, bus *eventbus.EventBus, storage config.Storage, pubSubConn string, thumbnail config.Thumbnail) *AllRepos {
-	attachments := &AttachmentRepo{db, storage, pubSubConn, thumbnail}
+func New(db *ent.Client, bus *eventbus.EventBus, storage config.Storage, pubSubConn string, thumbnail config.Thumbnail, imageScaling config.ImageScaling) *AllRepos {
+	attachments := &AttachmentRepo{db: db, storage: storage, pubSubConn: pubSubConn, thumbnail: thumbnail, imageScaling: imageScaling}
 	return &AllRepos{
 		Users:               &UserRepository{db},
 		AuthTokens:          &TokenRepository{db},

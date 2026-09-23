@@ -23,6 +23,8 @@ const (
 	FieldName = "name"
 	// FieldCurrency holds the string denoting the currency field in the database.
 	FieldCurrency = "currency"
+	// FieldScaleImages holds the string denoting the scale_images field in the database.
+	FieldScaleImages = "scale_images"
 	// EdgeUsers holds the string denoting the users edge name in mutations.
 	EdgeUsers = "users"
 	// EdgeEntityTypes holds the string denoting the entity_types edge name in mutations.
@@ -113,6 +115,7 @@ var Columns = []string{
 	FieldUpdatedAt,
 	FieldName,
 	FieldCurrency,
+	FieldScaleImages,
 }
 
 var (
@@ -142,6 +145,8 @@ var (
 	NameValidator func(string) error
 	// DefaultCurrency holds the default value on creation for the "currency" field.
 	DefaultCurrency string
+	// DefaultScaleImages holds the default value on creation for the "scale_images" field.
+	DefaultScaleImages bool
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )
@@ -172,6 +177,11 @@ func ByName(opts ...sql.OrderTermOption) OrderOption {
 // ByCurrency orders the results by the currency field.
 func ByCurrency(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCurrency, opts...).ToFunc()
+}
+
+// ByScaleImages orders the results by the scale_images field.
+func ByScaleImages(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldScaleImages, opts...).ToFunc()
 }
 
 // ByUsersCount orders the results by users count.

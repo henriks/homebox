@@ -77,9 +77,7 @@ export class GroupApi extends BaseAPI {
     });
   }
 
-  /**
-   * Update group name and currency.
-   */
+  /** Update collection settings. */
   update(data: GroupUpdate, groupId?: string) {
     const headers = groupId
       ? {

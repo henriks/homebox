@@ -34,6 +34,8 @@
         },
         "no_invites": "No invites",
         "remaining_uses": "Remaining uses",
+        "scale_images": "Automatically scale uploaded photos",
+        "scale_images_description": "New photos are resized and saved as WebP to use less storage. Existing photos are unchanged.",
         "tabs": {
             "entity_types": "Entity Types",
             "invites": "Invites",

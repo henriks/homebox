@@ -6,6 +6,7 @@
   import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
   import MdiLoading from "~icons/mdi/loading";
   import FormTextField from "~/components/Form/TextField.vue";
+  import FormCheckbox from "~/components/Form/Checkbox.vue";
   import type { CurrenciesCurrency, Group } from "~~/lib/api/types/data-contracts";
   import { fmtCurrencyAsync } from "~/composables/utils";
 
@@ -28,6 +29,7 @@
   const currencies = ref<CurrenciesCurrency[]>([]);
   const name = ref("");
   const currencyCode = ref("USD");
+  const scaleImages = ref(false);
   const currencyExample = ref("$1,000.00");
 
   const loadSettings = async () => {
@@ -60,6 +62,7 @@
       group.value = res.data;
       name.value = res.data.name;
       currencyCode.value = res.data.currency;
+      scaleImages.value = res.data.scaleImages;
     } catch (e) {
       const msg = (e as Error).message ?? String(e);
       error.value = msg;
@@ -101,6 +104,7 @@
         {
           name: name.value,
           currency: currencyCode.value,
+          scaleImages: scaleImages.value,
         },
         selectedCollection.value.id
       );
@@ -158,6 +162,11 @@
             </SelectContent>
           </Select>
           <p class="m-2 text-sm">{{ $t("profile.example") }}: {{ currencyExample }}</p>
+        </div>
+
+        <div>
+          <FormCheckbox v-model="scaleImages" :label="$t('collection.scale_images')" />
+          <p class="mt-1 text-sm text-muted-foreground">{{ $t("collection.scale_images_description") }}</p>
         </div>
 
         <div class="mt-4">

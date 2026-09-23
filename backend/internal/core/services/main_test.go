@@ -80,7 +80,7 @@ func MainNoExit(m *testing.M) int {
 		Enabled: false,
 		Width:   0,
 		Height:  0,
-	})
+	}, config.ImageScaling{Width: 1920, Height: 1920, Quality: 80})
 
 	err = os.MkdirAll(os.TempDir()+"/homebox", 0o755)
 	if err != nil {

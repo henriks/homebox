@@ -29,6 +29,8 @@ func (Group) Fields() []ent.Field {
 			NotEmpty(),
 		field.String("currency").
 			Default("usd"),
+		field.Bool("scale_images").
+			Default(false),
 	}
 }
 
