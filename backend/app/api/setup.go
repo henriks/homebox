@@ -92,7 +92,7 @@ func runMigrations(c *ent.Client, driver string) error {
 		log.Error().Str("driver", driver).Msg("unsupported database driver")
 		return fmt.Errorf("unsupported database driver: %s", driver)
 	}
-	if err := goose.Up(c.Sql(), driver); err != nil {
+	if err := goose.Up(c.Sql(), driver, goose.WithAllowMissing()); err != nil {
 		log.Error().Err(err).Msg("failed to migrate database")
 		return err
 	}
