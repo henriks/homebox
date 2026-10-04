@@ -34,7 +34,7 @@ func newAuthTestApp(t *testing.T) (*app, services.UserAuthTokenDetail) {
 	repos := repo.New(client, eventbus.New(), config.Storage{
 		PrefixPath: "/",
 		ConnString: "file://" + os.TempDir(),
-	}, "mem://{{ .Topic }}", config.Thumbnail{}, nil)
+	}, "mem://{{ .Topic }}", config.Thumbnail{}, nil, config.ImageScaling{})
 
 	group, err := repos.Groups.GroupCreate(ctx, "auth-test", uuid.Nil)
 	require.NoError(t, err)
