@@ -775,6 +775,7 @@
                 "server_print_disabled_hint": "Admins can enable server printing with HBOX_LABEL_MAKER_PRINT_COMMAND."
             },
             "print_button": {
+                "basic_label": "Basic label",
                 "print_label": "Print label",
                 "more": "More print options",
                 "quick_with": "Print with {template}",
