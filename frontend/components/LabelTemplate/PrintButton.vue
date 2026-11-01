@@ -22,9 +22,10 @@
       /** What the label is for */
       type: "item" | "location";
       id: string;
+      assetId?: string;
       variant?: "default" | "outline";
     }>(),
-    { variant: "default" }
+    { variant: "default", assetId: "" }
   );
 
   const { t } = useI18n();
@@ -80,8 +81,13 @@
     try {
       const params: Record<string, string | boolean> = { print: true };
       if (selectedId.value) params.tenant = selectedId.value;
-      const kind = props.type === "location" ? "location" : "entity";
-      const response = await fetch(route(`/labelmaker/${kind}/${props.id}`, params), { cache: "no-store" });
+      const target =
+        props.type === "location"
+          ? `location/${props.id}`
+          : props.assetId
+            ? `asset/${props.assetId}`
+            : `entity/${props.id}`;
+      const response = await fetch(route(`/labelmaker/${target}`, params), { cache: "no-store" });
       if (!response.ok) throw new Error(await response.text());
       toast.success(t("components.label_template.print_button.sent"));
     } catch (e) {
